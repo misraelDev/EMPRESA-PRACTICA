@@ -14,10 +14,10 @@ Este proyecto es una práctica de desarrollo de una aplicación web utilizando J
 ![Página de Inicio](https://github.com/user-attachments/assets/06e0a9e2-9dc1-4f70-934d-261298378a8e)
 
 ### Agregar departamento
-![Agregar Departamento](https://github.com/user-attachments/assets/3c6e57f7-07fd-4c0c-912f-765111d4d9c7)
+![Agregar Departamento](https://github.com/user-attachments/assets/195cc71c-704f-4610-9c8e-5fc7315272ce)
 
 ### Agregar empleado
-![Agregar Empleado](https://github.com/user-attachments/assets/2a536a59-4c9b-42c8-af10-5fa64cf257b5)
+![Agregar Empleado](https://github.com/user-attachments/assets/f3028411-fbf3-4dea-b48b-01741310ff3a)
 
 ## Tecnologías utilizadas
 
