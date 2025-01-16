@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <title>Nuevo empleado</title>
     <meta charset="UTF-8">
@@ -7,26 +8,32 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        .form-floating > label {
+        .form-floating>label {
             padding-left: 1.25rem;
         }
+
         .progress-indicator {
             height: 4px;
             transition: width 0.2s ease;
         }
+
         .card {
             border: none;
             box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
         }
+
         .form-control:focus {
             box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.25);
         }
+
         .invalid-feedback {
             font-size: 0.85rem;
         }
+
         .bg-gradient-primary {
             background: linear-gradient(45deg, #4e73df 10%, #224abe 100%);
         }
+
         .step-indicator {
             width: 30px;
             height: 30px;
@@ -37,19 +44,21 @@
             justify-content: center;
             margin-right: 10px;
         }
+
         .step-indicator.active {
             background-color: #4e73df;
             color: white;
         }
     </style>
 </head>
+
 <body class="bg-light">
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-gradient-primary">
         <div class="container">
             <a class="navbar-brand" href="/">
                 <i class="fas fa-users me-2"></i>
-                Sistema de empleados
+                Sistema de empleados y departamentos
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -60,7 +69,8 @@
                         <a class="nav-link" href="/"><i class="fas fa-home me-1"></i> Inicio</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="/empleado/nuevo"><i class="fas fa-user-tie me-1"></i> Empleados</a>
+                        <a class="nav-link active" href="/empleado/nuevo"><i class="fas fa-user-tie me-1"></i>
+                            Empleados</a>
                     </li>
                 </ul>
             </div>
@@ -83,7 +93,8 @@
                             Nuevo empleado
                         </h2>
 
-                        <form th:action="@{/empleado/guardar}" th:object="${empleado}" method="post" class="needs-validation" novalidate>
+                        <form id="empleadoForm" th:action="@{/empleado/guardar}" th:object="${empleado}" method="post"
+                            class="needs-validation" novalidate>
                             <!-- Datos Personales -->
                             <div class="mb-4">
                                 <div class="d-flex align-items-center mb-3">
@@ -92,117 +103,117 @@
                                 </div>
 
                                 <div class="form-floating mb-3">
-                                    <input 
-                                        type="text" 
-                                        class="form-control" 
-                                        id="nombre" 
-                                        th:field="*{nombre}" 
-                                        placeholder="Nombre"
-                                        required 
-                                        minlength="3" 
-                                        maxlength="25" 
-                                        pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$"
-                                    >
+                                    <input type="text" class="form-control" id="nombre" th:field="*{nombre}"
+                                        placeholder="Nombre" required minlength="3" maxlength="25" pattern="^[A-Za-z]+$"
+                                        oninput="validarSoloLetras(this)">
                                     <label for="nombre">Nombre</label>
                                     <div class="invalid-feedback">
                                         <i class="fas fa-exclamation-circle me-1"></i>
-                                        Solo letras y espacios, entre 3 y 25 caracteres.
+                                        Solo letras, entre 3 y 25 caracteres.
+                                    </div>
+                                    <div class="valid-feedback">
+                                        <i class="fas fa-check-circle me-1"></i>
+                                        ¡Perfecto!
                                     </div>
                                 </div>
 
                                 <div class="form-floating mb-3">
-                                    <input 
-                                        type="text" 
-                                        class="form-control" 
-                                        id="appPaterno" 
-                                        th:field="*{appPaterno}" 
-                                        placeholder="Apellido paterno"
-                                        required 
-                                        minlength="3" 
-                                        maxlength="25" 
-                                        pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$"
-                                    >
+                                    <input type="text" class="form-control" id="appPaterno" th:field="*{appPaterno}"
+                                        placeholder="Apellido paterno" required minlength="3" maxlength="25"
+                                        pattern="^[A-Za-z]+$" oninput="validarSoloLetras(this)">
                                     <label for="appPaterno">Apellido paterno</label>
                                     <div class="invalid-feedback">
                                         <i class="fas fa-exclamation-circle me-1"></i>
-                                        Solo letras y espacios, entre 3 y 25 caracteres.
+                                        Solo letras, entre 3 y 25 caracteres.
+                                    </div>
+                                    <div class="valid-feedback">
+                                        <i class="fas fa-check-circle me-1"></i>
+                                        ¡Perfecto!
                                     </div>
                                 </div>
 
                                 <div class="form-floating mb-3">
-                                    <input 
-                                        type="text" 
-                                        class="form-control" 
-                                        id="appMaterno" 
-                                        th:field="*{appMaterno}" 
-                                        placeholder="Apellido materno"
-                                        required 
-                                        minlength="3" 
-                                        maxlength="25" 
-                                        pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$"
-                                    >
+                                    <input type="text" class="form-control" id="appMaterno" th:field="*{appMaterno}"
+                                        placeholder="Apellido materno" required minlength="3" maxlength="25"
+                                        pattern="^[A-Za-z]+$" oninput="validarSoloLetras(this)">
                                     <label for="appMaterno">Apellido materno</label>
                                     <div class="invalid-feedback">
                                         <i class="fas fa-exclamation-circle me-1"></i>
-                                        Solo letras y espacios, entre 3 y 25 caracteres.
+                                        Solo letras, entre 3 y 25 caracteres.
                                     </div>
-                                </div>
-                            </div>
-
-                            <!-- Información Laboral -->
-                            <div class="mb-4">
-                                <div class="d-flex align-items-center mb-3">
-                                    <div class="step-indicator">2</div>
-                                    <h5 class="mb-0">Información laboral</h5>
-                                </div>
-
-                                <div class="form-floating mb-3">
-                                    <input 
-                                        type="date" 
-                                        class="form-control" 
-                                        id="fechaNacimiento" 
-                                        th:field="*{fechaNacimiento}" 
-                                        required
-                                    >
-                                    <label for="fechaNacimiento">Fecha de nacimiento</label>
-                                    <div class="invalid-feedback">
-                                        <i class="fas fa-exclamation-circle me-1"></i>
-                                        Por favor, selecciona una fecha válida.
+                                    <div class="valid-feedback">
+                                        <i class="fas fa-check-circle me-1"></i>
+                                        ¡Perfecto!
                                     </div>
                                 </div>
 
-                                <div class="form-floating mb-3">
-                                    <select 
-                                        class="form-select" 
-                                        id="departamento" 
-                                        th:field="*{departamento.idDepto}" 
-                                        required
-                                    >
-                                        <option value="">Seleccione un departamento</option>
-                                        <option th:each="depto : ${departamentos}" 
-                                                th:value="${depto.idDepto}" 
+
+                                <!-- Información Laboral -->
+                                <div class="mb-4">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="step-indicator">2</div>
+                                        <h5 class="mb-0">Información laboral</h5>
+                                    </div>
+
+                                    <div class="form-floating mb-3">
+                                        <input type="date" class="form-control" id="fechaNacimiento"
+                                            th:field="*{fechaNacimiento}" required>
+                                        <label for="fechaNacimiento">Fecha de nacimiento</label>
+                                        <div class="invalid-feedback">
+                                            <i class="fas fa-exclamation-circle me-1"></i>
+                                            Por favor, selecciona una fecha válida.
+                                        </div>
+                                        <div class="valid-feedback">
+                                            <i class="fas fa-check-circle me-1"></i>
+                                            ¡Perfecto!
+                                        </div>
+                                    </div>
+
+                                    <div class="form-floating mb-3">
+                                        <select class="form-select" id="departamento" th:field="*{departamento.idDepto}"
+                                            required>
+                                            <option value="">Seleccione un departamento</option>
+                                            <option th:each="depto : ${departamentos}" th:value="${depto.idDepto}"
                                                 th:text="${depto.nombre}">
-                                        </option>
-                                    </select>
-                                    <label for="departamento">Departamento</label>
-                                    <div class="invalid-feedback">
-                                        <i class="fas fa-exclamation-circle me-1"></i>
-                                        Por favor, selecciona un departamento.
+                                            </option>
+                                        </select>
+                                        <label for="departamento">Departamento</label>
+                                        <div class="invalid-feedback">
+                                            <i class="fas fa-exclamation-circle me-1"></i>
+                                            Por favor, selecciona un departamento.
+                                        </div>
+                                        <div class="valid-feedback">
+                                            <i class="fas fa-check-circle me-1"></i>
+                                            ¡Perfecto!
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="d-grid gap-2">
-                                <button type="submit" class="btn btn-primary btn-lg">
-                                    <i class="fas fa-save me-2"></i>Guardar empleado
-                                </button>
-                                <a href="/" class="btn btn-light btn-lg">
-                                    <i class="fas fa-times me-2"></i>Cancelar
-                                </a>
-                            </div>
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="fas fa-save me-2"></i>Guardar empleado
+                                    </button>
+                                    <a href="/" class="btn btn-light btn-lg">
+                                        <i class="fas fa-times me-2"></i>Cancelar
+                                    </a>
+                                </div>
                         </form>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <i class="fas fa-check-circle me-2 text-success"></i>
+                <strong class="me-auto">Éxito</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                El empleado ha sido guardado correctamente.
             </div>
         </div>
     </div>
@@ -211,11 +222,12 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const form = document.querySelector('form');
+            const form = document.getElementById('empleadoForm');
             const inputs = document.querySelectorAll('input, select');
             const progressBar = document.querySelector('.progress-indicator');
             const stepIndicators = document.querySelectorAll('.step-indicator');
-            
+            const toastLiveExample = document.getElementById('liveToast');
+
             // Función para bloquear números
             function bloquearNumeros(event) {
                 if (/\d/.test(event.key)) {
@@ -246,13 +258,13 @@
             function updateProgress() {
                 const totalFields = inputs.length;
                 let validFields = 0;
-                
+
                 inputs.forEach(input => {
                     if (input.checkValidity() && input.value !== '') {
                         validFields++;
                     }
                 });
-                
+
                 const progress = (validFields / totalFields) * 100;
                 progressBar.style.width = `${progress}%`;
 
@@ -279,11 +291,57 @@
                 });
             });
 
-            form.addEventListener('submit', (event) => {
-                if (!form.checkValidity()) {
-                    event.preventDefault();
-                    event.stopPropagation();
+            function validarSoloLetras(input) {
+                // Permitir solo letras mayúsculas y minúsculas
+                const patron = /^[A-Za-z]*$/;
+
+                // Si el valor no cumple con el patrón, eliminar los caracteres inválidos
+                if (!patron.test(input.value)) {
+                    input.value = input.value.replace(/[^A-Za-z]/g, '');
                 }
+            }
+
+            // Bloquear caracteres inválidos en tiempo real
+            document.querySelectorAll('input[type="text"]').forEach(input => {
+                input.addEventListener('keypress', (event) => {
+                    const key = event.key;
+                    if (!/^[A-Za-z]+$/.test(key)) {
+                        event.preventDefault();
+                    }
+                });
+            });
+
+            form.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+
+                if (form.checkValidity()) {
+                    const formData = new FormData(form);
+                    const data = Object.fromEntries(formData.entries());
+
+                    try {
+                        const response = await fetch(form.action, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(data)
+                        });
+
+                        if (response.ok) {
+                            const toast = new bootstrap.Toast(toastLiveExample);
+                            toast.show();
+                            setTimeout(() => {
+                                window.location.href = '/';
+                            }, 2000);
+                        } else {
+                            console.error('Error al guardar el empleado');
+                        }
+                    } catch (error) {
+                        console.error('Error al enviar la solicitud:', error);
+                    }
+                }
+
                 form.classList.add('was-validated');
                 updateProgress();
             });
@@ -293,4 +351,5 @@
         });
     </script>
 </body>
+
 </html>

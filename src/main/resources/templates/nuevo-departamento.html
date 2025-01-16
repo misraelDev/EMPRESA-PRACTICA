@@ -35,7 +35,7 @@
         <div class="container">
             <a class="navbar-brand" href="/">
                 <i class="fas fa-building me-2"></i>
-                Sistema de Empleados
+                Sistema de empleados y departamentos
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -146,9 +146,13 @@
             });
 
             form.addEventListener('submit', (event) => {
-                if (!form.checkValidity()) {
-                    event.preventDefault();
-                    event.stopPropagation();
+                event.preventDefault();
+                if (form.checkValidity()) {
+                    const toast = new bootstrap.Toast(toastLiveExample);
+                    toast.show();
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 3000); // Redirigir después de 3 segundos
                 }
                 form.classList.add('was-validated');
                 updateProgress();
@@ -160,3 +164,33 @@
     </script>
 </body>
 </html>
+<!-- Toast Notification -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <i class="fas fa-check-circle me-2 text-success"></i>
+            <strong class="me-auto">Éxito</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            El departamento ha sido guardado correctamente.
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const toastTrigger = document.querySelector('form');
+        const toastLiveExample = document.getElementById('liveToast');
+
+        toastTrigger.addEventListener('submit', (event) => {
+            if (toastTrigger.checkValidity()) {
+                const toast = new bootstrap.Toast(toastLiveExample);
+                toast.show();
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 2000); 
+            }
+        });
+    });
+</script>
