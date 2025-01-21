@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "empleados")
@@ -31,7 +30,6 @@ public class Empleado {
     private LocalDate fechaNacimiento;
 
     @ManyToOne
-    @JsonBackReference
     @JoinColumn(name = "idDepto", nullable = true)
     private Departamento departamento;
 
@@ -96,5 +94,17 @@ public class Empleado {
     public void setDepartamento(Departamento departamento) {
         this.departamento = departamento;
     }
+
+    @Override
+public String toString() {
+    return "Empleado{" +
+            "nombre='" + nombre + '\'' +
+            ", appPaterno='" + appPaterno + '\'' +
+            ", appMaterno='" + appMaterno + '\'' +
+            ", departamento=" + (departamento != null ? departamento.getIdDepto() : "null") +
+            ", fechaNacimiento=" + fechaNacimiento +
+            '}';
+}
+
 }
 

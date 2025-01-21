@@ -7,18 +7,31 @@ import org.springframework.web.bind.annotation.*;
 import com.empresa.model.Departamento;
 import com.empresa.service.DepartamentoService;
 
+import java.util.List;
+
+
 @RestController
 @RequestMapping("/api/v1/departamentos")
 public class DepartamentoController {
-    
+
     @Autowired
     private DepartamentoService departamentoService;
-    
-    @PostMapping
-    public ResponseEntity<Departamento> createDepartamento(@RequestBody Departamento departamento) {
+
+    @GetMapping("/total")
+    public long getTotalDepartamentos() {
+        return departamentoService.countDepartamentos();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Departamento>> getAllDepartamentos() {
         try {
-            Departamento newDepartamento = departamentoService.createDepartamento(departamento);
-            return new ResponseEntity<>(newDepartamento, HttpStatus.CREATED);
+            List<Departamento> departamentos = departamentoService.getAllDepartamentos();
+
+            if (departamentos.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+
+            return new ResponseEntity<>(departamentos, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }

@@ -1,77 +1,272 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="es">
+
 <head>
-    <title>Sistema de empleados</title>
+    <title>Sistema de gestión</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="icon" type="image/x-icon"href="/src/favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="/src/favicon.ico">
     <style>
-        .card-dashboard {
-            transition: transform 0.2s;
-            cursor: pointer;
+        :root {
+            --primary-color: #4e73df;
+            --primary-dark: #224abe;
+            --success-color: #1cc88a;
+            --danger-color: #e74a3b;
+            --navbar-height: 56px;
+            --sidebar-width: 250px;
         }
-        .card-dashboard:hover {
-            transform: translateY(-5px);
+
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: var(--sidebar-width);
+            height: var(--navbar-height);
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+            transition: left 0.3s ease-in-out;
         }
+
+        @media (max-width: 768px) {
+            .navbar {
+                left: 0;
+                width: 100%;
+            }
+
+            .sidebar.show+.main-content .navbar {
+                left: var(--sidebar-width);
+            }
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            z-index: 1000;
+            background: linear-gradient(180deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0 !important;
+            }
+        }
+
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 1rem 1.5rem;
+            transition: all 0.2s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.1);
+            border-left-color: #fff;
+        }
+
+        .sidebar-header {
+            height: var(--navbar-height);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-header h5 {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 2rem;
+            transition: margin 0.3s ease-in-out;
+        }
+
+        /* Stats Card */
         .stats-card {
-            border-left: 4px solid;
+            transition: transform 0.2s ease;
+            border: none;
+            border-radius: 0.5rem;
         }
-        .bg-gradient-primary {
-            background: linear-gradient(45deg, #4e73df 10%, #224abe 100%);
+
+        .stats-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .stats-card.primary {
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .stats-card.success {
+            border-left: 4px solid var(--success-color);
+        }
+
+        /* Toast */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1060;
+        }
+
+        .custom-toast {
+            min-width: 300px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .custom-toast.show {
+            opacity: 1;
+        }
+
+        .toast-success {
+            border-left: 4px solid var(--success-color);
+        }
+
+        .toast-error {
+            border-left: 4px solid var(--danger-color);
+        }
+
+        /* Table */
+        .table-container {
+            background: #fff;
+            border-radius: 1rem;
+            box-shadow: 0 0.15rem 1.75rem rgba(58, 59, 69, 0.1);
+        }
+
+        .table th {
+            font-weight: 600;
+            background-color: #f8f9fc;
+            border-bottom: 2px solid #e3e6f0;
+        }
+
+        /* Buttons */
+        .btn-action {
+            padding: 0.25rem 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .btn-action:hover {
+            transform: scale(1.1);
+        }
+
+        /* Loading */
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .loading .loading-spinner {
+            display: block;
+        }
+
+        /* Global */
+        body {
+            min-height: 100vh;
+            background-color: #f8f9fc;
         }
     </style>
+
 </head>
-<body class="bg-light">
+
+<body>
+    <!-- Toast Container -->
+    <div class="toast-container"></div>
+
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-gradient-primary">
-        <div class="container">
-            <a class="navbar-brand" href="#">
-                <i class="fas fa-users-gear me-2"></i>
-                Sistema de empleados y departamentos
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+    <nav class="navbar navbar-expand-lg fixed-top bg-white" style="left: var(--sidebar-width);">
+        <div class="container-fluid">
+            <button class="navbar-toggler border-0" type="button" id="sidebarToggle">
                 <span class="navbar-toggler-icon"></span>
             </button>
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-users-gear me-2"></i>
+                Sistema de gestión
+            </a>
         </div>
     </nav>
 
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header text-white">
+            <i class="fas fa-user-tie me-2"></i>
+            <h5>Panel de control</h5>
+        </div>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link active" href="#" data-type="empleados">
+                    <i class="fas fa-user-tie me-2"></i>
+                    Empleados
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" data-type="departamentos">
+                    <i class="fas fa-building me-2"></i>
+                    Departamentos
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" data-type="historial">
+                    <i class="fas fa-history me-2"></i>
+                    Historial
+                </a>
+            </li>
+        </ul>
+    </div>
+
     <!-- Main Content -->
-    <div class="container my-5">
-        <div class="row mb-4">
-            <div class="col">
-                <h2 class="mb-4">Panel de control</h2>
-            </div>
-        </div>
-
+    <div class="main-content pt-5 mt-3">
         <!-- Stats Cards -->
-        <div class="row mb-4">
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-0 shadow stats-card" style="border-left-color: #4e73df !important;">
+        <div class="row g-4 mb-4">
+            <div class="col-12 col-md-6 col-xl-3">
+                <div class="card stats-card primary h-100">
                     <div class="card-body">
-                        <div class="row align-items-center">
-                            <div class="col">
-                                <div class="text-xs fw-bold text-primary text-uppercase mb-1">Total de empleados</div>
-                                <div class="h5 mb-0 fw-bold text-gray-800">26</div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-primary text-uppercase fw-bold mb-1">Total Empleados</h6>
+                                <h2 class="mb-0 fw-bold" id="totalEmpleados">0</h2>
                             </div>
-                            <div class="col-auto">
-                                <i class="fas fa-users fa-2x text-gray-300"></i>
+                            <div class="icon-circle bg-primary bg-opacity-10 p-3 rounded-circle">
+                                <i class="fas fa-users fa-2x text-primary"></i>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-0 shadow stats-card" style="border-left-color: #1cc88a !important;">
+            <div class="col-12 col-md-6 col-xl-3">
+                <div class="card stats-card success h-100">
                     <div class="card-body">
-                        <div class="row align-items-center">
-                            <div class="col">
-                                <div class="text-xs fw-bold text-success text-uppercase mb-1">Total de departamentos</div>
-                                <div class="h5 mb-0 fw-bold text-gray-800">5</div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-success text-uppercase fw-bold mb-1">Total Departamentos</h6>
+                                <h2 class="mb-0 fw-bold" id="totalDepartamentos">0</h2>
                             </div>
-                            <div class="col-auto">
-                                <i class="fas fa-building fa-2x text-gray-300"></i>
+                            <div class="icon-circle bg-success bg-opacity-10 p-3 rounded-circle">
+                                <i class="fas fa-building fa-2x text-success"></i>
                             </div>
                         </div>
                     </div>
@@ -79,37 +274,442 @@
             </div>
         </div>
 
-        <!-- Action Cards -->
-        <div class="row">
-            <div class="col-md-6 mb-4">
-                <div class="card card-dashboard border-0 shadow h-100">
-                    <div class="card-body text-center">
-                        <i class="fas fa-building fa-3x text-primary mb-3"></i>
-                        <h5 class="card-title">Gestión de departamentos</h5>
-                        <p class="card-text text-muted">Administre los departamentos de la empresa</p>
-                        <a href="/departamento/nuevo" class="btn btn-primary">
-                            <i class="fas fa-plus me-2"></i>Nuevo departamento
-                        </a>
-                    </div>
+        <!-- Table Container -->
+        <div class="table-container p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 id="tableTitle" class="mb-1">Empleados</h4>
+                    <p class="text-muted mb-0" id="tableDescription">Gestiona la información de los empleados de la
+                        empresa.</p>
                 </div>
+                <button id="addButton" class="btn btn-primary">
+                    <i class="fas fa-plus me-2"></i>Agregar nuevo
+                </button>
             </div>
 
-            <div class="col-md-6 mb-4">
-                <div class="card card-dashboard border-0 shadow h-100">
-                    <div class="card-body text-center">
-                        <i class="fas fa-user-tie fa-3x text-success mb-3"></i>
-                        <h5 class="card-title">Gestión de empleados</h5>
-                        <p class="card-text text-muted">Administre la información de los empleados</p>
-                        <a href="/empleado/nuevo" class="btn btn-success">
-                            <i class="fas fa-plus me-2"></i>Nuevo empleado
-                        </a>
+            <div class="table-responsive">
+                <div class="loading-spinner">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Cargando...</span>
                     </div>
+                </div>
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                        <tr id="tableHeaders"></tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- Modal de eliminar registro -->
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">
+                        Confirmar eliminación
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <i class="fas fa-trash-alt text-danger mb-3" style="font-size: 3rem;"></i>
+                    <p class="mb-0 fs-5">¿Está seguro que desea eliminar este registro?</p>
+                    <p class="text-muted small mt-2">Esta acción no se puede deshacer</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Cancelar
+                    </button>
+                    <button type="button" class="btn btn-danger" id="confirmDelete">
+                        <i class="fas fa-trash-alt me-2"></i>Eliminar
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
+
+<script>
+    // Variables globales
+    let currentView = 'empleados';
+    const tableContainer = document.querySelector('.table-container');
+    let deleteConfirmModal;
+    let recordToDelete = null;
+
+    // Función para mostrar notificaciones toast
+    function showToast(message, type = 'success') {
+        const toastContainer = document.querySelector('.toast-container');
+        const toast = document.createElement('div');
+        toast.className = `custom-toast ${type === 'success' ? 'toast-success' : 'toast-error'} p-3 mb-2`;
+
+        toast.innerHTML = `
+        <div class="d-flex align-items-center">
+            <i class="fas ${type === 'success' ? 'fa-check-circle text-success' : 'fa-exclamation-circle text-danger'} me-2"></i>
+            <div class="flex-grow-1">${message}</div>
+            <button type="button" class="btn-close ms-2" onclick="this.parentElement.parentElement.remove()"></button>
+        </div>
+    `;
+
+        toastContainer.appendChild(toast);
+        toast.offsetHeight;
+        toast.classList.add('show');
+
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 300);
+        }, 5000);
+    }
+
+    // Función para cargar contadores
+    async function loadCounts() {
+        try {
+            const [empleadosResponse, departamentosResponse] = await Promise.all([
+                fetch('/api/v1/empleados/total'),
+                fetch('/api/v1/departamentos/total')
+            ]);
+
+            if (!empleadosResponse.ok || !departamentosResponse.ok) {
+                throw new Error('Error al obtener los conteos');
+            }
+
+            const totalEmpleados = await empleadosResponse.json();
+            const totalDepartamentos = await departamentosResponse.json();
+
+            document.getElementById('totalEmpleados').textContent = totalEmpleados.toLocaleString();
+            document.getElementById('totalDepartamentos').textContent = totalDepartamentos.toLocaleString();
+        } catch (error) {
+            console.error('Error al cargar los conteos:', error);
+            showToast('Error al cargar los contadores', 'error');
+        }
+    }
+
+    // Función para actualizar la URL y la vista
+    function updateView(type) {
+        currentView = type;
+        // Actualizar URL sin recargar la página
+        history.pushState(null, '', `/${type}`);
+        // Actualizar navegación activa
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.classList.toggle('active', link.dataset.type === type);
+        });
+        loadTableData(type);
+    }
+
+    // Función para manejar la navegación del navegador (botones atrás/adelante)
+    window.onpopstate = function (event) {
+        const path = window.location.pathname;
+        const view = path === '/departamentos' ? 'departamentos' : 'empleados';
+        updateView(view);
+    };
+
+    // Función para cargar datos de la tabla
+    async function loadTableData(type) {
+        const tableHeaders = document.getElementById('tableHeaders');
+        const tableBody = document.getElementById('tableBody');
+        const tableTitle = document.getElementById('tableTitle');
+        const tableDescription = document.getElementById('tableDescription');
+        const addButton = document.getElementById('addButton');
+
+        // Ocultar el botón de agregar en la vista de historial
+        addButton.style.display = type === 'historial' ? 'none' : 'block';
+
+        tableContainer.classList.add('loading');
+
+        try {
+            const response = await fetch(`/api/v1/${type}`);
+            if (!response.ok) {
+                throw new Error('Error al cargar los datos');
+            }
+
+            const data = await response.json();
+
+            // Configurar la vista según el tipo
+            switch (type) {
+                case 'empleados':
+                    return handleEmpleadosView(data, tableTitle, tableDescription, addButton, tableHeaders, tableBody);
+                case 'departamentos':
+                    return handleDepartamentosView(data, tableTitle, tableDescription, addButton, tableHeaders, tableBody);
+                case 'historial':
+                    return handleHistorialView(data, tableTitle, tableDescription, tableHeaders, tableBody);
+                default:
+                    throw new Error('Tipo de vista no válido');
+            }
+
+        } catch (error) {
+            console.error('Error al cargar los datos:', error);
+            showToast('Error al cargar los datos', 'error');
+            handleErrorView(type, tableBody);
+        } finally {
+            tableContainer.classList.remove('loading');
+        }
+    }
+
+    // Funciones auxiliares para manejar cada tipo de vista
+    function handleEmpleadosView(data, tableTitle, tableDescription, addButton, tableHeaders, tableBody) {
+        tableTitle.textContent = 'Empleados';
+        tableDescription.textContent = 'Gestiona la información de los empleados de la empresa.';
+        addButton.innerHTML = '<i class="fas fa-user-plus me-2"></i>Agregar empleado';
+
+        tableHeaders.innerHTML = `
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Apellido paterno</th>
+        <th>Apellido materno</th>
+        <th>Fecha nacimiento</th>
+        <th>Departamento</th>
+        <th class="text-end">Acciones</th>
+    `;
+
+        if (!data || data.length === 0) {
+            showEmptyState(tableBody, 'empleados', 7);
+            return;
+        }
+
+        tableBody.innerHTML = data.map(empleado => `
+        <tr>
+            <td>#${empleado.idCliente}</td>
+            <td><div class="fw-bold">${empleado.nombre}</div></td>
+            <td><div class="fw-bold">${empleado.appPaterno}</div></td>
+            <td><div class="fw-bold">${empleado.appMaterno}</div></td>
+            <td>${new Date(empleado.fechaNacimiento).toLocaleDateString()}</td>
+            <td>
+                <span class="badge bg-primary bg-opacity-10 text-primary">
+                    ${empleado.departamento?.nombre || 'Sin asignar'}
+                </span>
+            </td>
+            <td class="text-end">
+                <button class="btn btn-action btn-light me-2" 
+                        onclick="handleEdit(${empleado.idCliente}, 'empleados')" 
+                        title="Editar">
+                    <i class="fas fa-edit text-primary"></i>
+                </button>
+                <button class="btn btn-action btn-light" 
+                        onclick="handleDelete(${empleado.idCliente}, 'empleados')"
+                        title="Eliminar">
+                    <i class="fas fa-trash text-danger"></i>
+                </button>
+            </td>
+        </tr>
+    `).join('');
+    }
+
+    function handleDepartamentosView(data, tableTitle, tableDescription, addButton, tableHeaders, tableBody) {
+        tableTitle.textContent = 'Departamentos';
+        tableDescription.textContent = 'Gestiona la información de los departamentos de la empresa.';
+        addButton.innerHTML = '<i class="fas fa-plus me-2"></i>Agregar departamento';
+
+        tableHeaders.innerHTML = `
+        <th>ID</th>
+        <th>Nombre</th>
+        <th class="text-end">Acciones</th>
+    `;
+
+        if (!data || data.length === 0) {
+            showEmptyState(tableBody, 'departamentos', 3);
+            return;
+        }
+
+        tableBody.innerHTML = data.map(departamento => `
+        <tr>
+            <td>#${departamento.idDepto}</td>
+            <td class="fw-bold">${departamento.nombre}</td>
+            <td class="text-end">
+                <button class="btn btn-action btn-light me-2" 
+                        onclick="handleEdit(${departamento.idDepto}, 'departamentos')"
+                        title="Editar">
+                    <i class="fas fa-edit text-primary"></i>
+                </button>
+                <button class="btn btn-action btn-light"
+                        onclick="handleDelete(${departamento.idDepto}, 'departamentos')"
+                        title="Eliminar">
+                    <i class="fas fa-trash text-danger"></i>
+                </button>
+            </td>
+        </tr>
+    `).join('');
+    }
+
+    function handleHistorialView(data, tableTitle, tableDescription, tableHeaders, tableBody) {
+        tableTitle.textContent = 'Historial de Cambios';
+        tableDescription.textContent = 'Registro histórico de cambios en empleados';
+
+        tableHeaders.innerHTML = `
+        <th>ID Registro</th>
+        <th>ID Empleado</th>
+        <th>Operación</th>
+        <th>Fecha y Hora</th>
+    `;
+
+        if (!data || data.length === 0) {
+            showEmptyState(tableBody, 'historial', 4);
+            return;
+        }
+
+        tableBody.innerHTML = data.map(registro => `
+        <tr>
+            <td>#${registro.id_registro}</td>
+            <td>#${registro.id_empleado}</td>
+            <td>
+                <span class="badge ${getBadgeClass(registro.operacion)}">
+                    ${registro.operacion}
+                </span>
+            </td>
+            <td>${new Date(registro.fecha_hora).toLocaleString()}</td>
+        </tr>
+    `).join('');
+    }
+
+    function showEmptyState(tableBody, type, colSpan) {
+        const emptyStateContent = {
+            empleados: {
+                icon: 'user',
+                message: 'No hay empleados registrados'
+            },
+            departamentos: {
+                icon: 'building',
+                message: 'No hay departamentos registrados'
+            },
+            historial: {
+                icon: 'history',
+                message: 'No hay registros históricos'
+            }
+        };
+
+        const content = emptyStateContent[type];
+        tableBody.innerHTML = `
+        <tr>
+            <td colspan="${colSpan}" class="text-center py-5">
+                <div class="text-muted">
+                    <i class="fas fa-${content.icon} fa-3x mb-3"></i>
+                    <p class="h5 mb-2">${content.message}</p>
+                    <p class="mb-0">
+                        ${type !== 'historial' ? 'Haga clic en "Agregar nuevo" para comenzar' :
+                'El historial aparecerá cuando se realicen cambios en los empleados'}
+                    </p>
+                </div>
+            </td>
+        </tr>
+    `;
+    }
+
+    function handleErrorView(type, tableBody) {
+        const colSpan = type === 'empleados' ? 7 : (type === 'historial' ? 4 : 3);
+        tableBody.innerHTML = `
+        <tr>
+            <td colspan="${colSpan}" class="text-center py-4">
+                <i class="fas fa-exclamation-circle text-danger mb-3 fa-2x"></i>
+<p class="mb-0">
+    No se pudieron cargar los datos. Asegúrese de que existen registros disponibles. Intente nuevamente o agregue un nuevo registro.
+</p>
+            </td>
+        </tr>
+    `;
+    }
+
+    function getBadgeClass(operacion) {
+        const classes = {
+            'INSERT': 'bg-success',
+            'UPDATE': 'bg-primary',
+            'DELETE': 'bg-danger'
+        };
+        return classes[operacion.toUpperCase()] || 'bg-secondary';
+    }
+    // Función para eliminar registros
+    async function deleteRecord(id, type) {
+        try {
+            const response = await fetch(`/api/v1/${type}/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Error en la eliminación');
+            }
+
+            if (deleteConfirmModal) {
+                deleteConfirmModal.hide();
+            }
+
+            showToast(`${type === 'empleados' ? 'Empleado' : 'Departamento'} eliminado con éxito`);
+            await loadTableData(type);
+            await loadCounts();
+        } catch (error) {
+            showToast(error.message || 'Error al eliminar el registro', 'error');
+            console.error('Error:', error);
+        }
+    }
+
+    // Función para manejar la edición
+    function handleEdit(id, type) {
+        window.location.href = `/${type === 'empleados' ? 'empleado' : 'departamento'}/editar/${id}`;
+    }
+
+    // Función para manejar la eliminación
+    function handleDelete(id, type) {
+        recordToDelete = { id, type };
+        deleteConfirmModal.show();
+    }
+
+    // Event Listeners
+    document.addEventListener('DOMContentLoaded', () => {
+        // Inicializar el modal
+        deleteConfirmModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+
+        // Determinar la vista inicial basada en la URL actual
+        const path = window.location.pathname;
+        currentView = path === '/departamentos' ? 'departamentos' : 'empleados';
+
+        // Inicialización
+        loadCounts();
+        updateView(currentView);
+
+        // Configurar navegación
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const type = e.currentTarget.dataset.type;
+                updateView(type);
+            });
+        });
+
+        // Configurar toggle del sidebar
+        document.getElementById('sidebarToggle')?.addEventListener('click', () => {
+            document.querySelector('.sidebar').classList.toggle('show');
+        });
+
+        // Configurar botón de añadir
+        document.getElementById('addButton').addEventListener('click', () => {
+            window.location.href = `/${currentView === 'empleados' ? 'empleado' : 'departamento'}/nuevo`;
+        });
+
+        // Configurar botón de confirmación de eliminación
+        document.getElementById('confirmDelete').addEventListener('click', async () => {
+            if (recordToDelete) {
+                await deleteRecord(recordToDelete.id, recordToDelete.type);
+                recordToDelete = null;
+            }
+        });
+
+        // Cerrar modal cuando se presiona el botón de cancelar
+        document.querySelector('#deleteConfirmModal .btn-secondary').addEventListener('click', () => {
+            recordToDelete = null;
+        });
+
+        // Manejar cierre del modal con la X o haciendo clic fuera
+        document.getElementById('deleteConfirmModal').addEventListener('hidden.bs.modal', () => {
+            recordToDelete = null;
+        });
+    });
+
+    // Auto-refresh de contadores
+    setInterval(loadCounts, 30000);
+
+</script>

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>Nuevo empleado</title>
+    <title>Editar empleado</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -39,10 +39,13 @@
             height: 30px;
             border-radius: 50%;
             background-color: #e9ecef;
+            color: #6c757d;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 10px;
+            margin-right: 1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
         }
 
         .step-indicator.active {
@@ -53,7 +56,7 @@
 </head>
 
 <body class="bg-light">
-    <!-- Navbar -->
+    <!-- Barra de navegación -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-gradient-primary">
         <div class="container">
             <a class="navbar-brand" href="/">
@@ -66,24 +69,26 @@
         </div>
     </nav>
 
-    <!-- Progress bar -->
+    <!-- Barra de progreso -->
     <div class="progress" style="height: 4px;">
         <div class="progress-bar progress-indicator bg-primary" role="progressbar" style="width: 0%"></div>
     </div>
 
-    <!-- Main Content -->
+    <!-- Contenido principal -->
     <div class="container my-5">
         <div class="row justify-content-center">
             <div class="col-lg-8">
                 <div class="card">
                     <div class="card-body p-5">
                         <h2 class="text-center mb-4">
-                            <i class="fas fa-user-plus text-primary mb-3 d-block"></i>
-                            Nuevo empleado
+                            <i class="fas fa-user-edit text-primary mb-3 d-block"></i>
+                            Editar empleado
                         </h2>
 
-                        <form id="empleadoForm" th:action="@{/empleado/guardar}" th:object="${empleado}" method="post"
-                            class="needs-validation" novalidate>
+                        <form id="empleadoForm" th:object="${empleado}" method="post" class="needs-validation"
+                            novalidate>
+                            <input type="hidden" th:field="*{idCliente}" />
+
                             <!-- Datos Personales -->
                             <div class="mb-4">
                                 <div class="d-flex align-items-center mb-3">
@@ -93,49 +98,36 @@
 
                                 <div class="form-floating mb-3">
                                     <input type="text" class="form-control" id="nombre" th:field="*{nombre}"
-                                        placeholder="Nombre" required minlength="3" maxlength="25" pattern="^[A-Za-z]+$"
-                                        oninput="validarSoloLetras(this)">
+                                        placeholder="Nombre" required minlength="3" maxlength="25"
+                                        pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ]+$">
                                     <label for="nombre">Nombre</label>
                                     <div class="invalid-feedback">
                                         <i class="fas fa-exclamation-circle me-1"></i>
                                         Solo letras, entre 3 y 25 caracteres.
-                                    </div>
-                                    <div class="valid-feedback">
-                                        <i class="fas fa-check-circle me-1"></i>
-                                        ¡Perfecto!
                                     </div>
                                 </div>
 
                                 <div class="form-floating mb-3">
                                     <input type="text" class="form-control" id="appPaterno" th:field="*{appPaterno}"
                                         placeholder="Apellido paterno" required minlength="3" maxlength="25"
-                                        pattern="^[A-Za-z]+$" oninput="validarSoloLetras(this)">
+                                        pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ]+$">
                                     <label for="appPaterno">Apellido paterno</label>
                                     <div class="invalid-feedback">
                                         <i class="fas fa-exclamation-circle me-1"></i>
                                         Solo letras, entre 3 y 25 caracteres.
-                                    </div>
-                                    <div class="valid-feedback">
-                                        <i class="fas fa-check-circle me-1"></i>
-                                        ¡Perfecto!
                                     </div>
                                 </div>
 
                                 <div class="form-floating mb-3">
                                     <input type="text" class="form-control" id="appMaterno" th:field="*{appMaterno}"
                                         placeholder="Apellido materno" required minlength="3" maxlength="25"
-                                        pattern="^[A-Za-z]+$" oninput="validarSoloLetras(this)">
+                                        pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ]+$">
                                     <label for="appMaterno">Apellido materno</label>
                                     <div class="invalid-feedback">
                                         <i class="fas fa-exclamation-circle me-1"></i>
                                         Solo letras, entre 3 y 25 caracteres.
                                     </div>
-                                    <div class="valid-feedback">
-                                        <i class="fas fa-check-circle me-1"></i>
-                                        ¡Perfecto!
-                                    </div>
                                 </div>
-
 
                                 <!-- Información Laboral -->
                                 <div class="mb-4">
@@ -152,10 +144,6 @@
                                             <i class="fas fa-exclamation-circle me-1"></i>
                                             Por favor, selecciona una fecha válida.
                                         </div>
-                                        <div class="valid-feedback">
-                                            <i class="fas fa-check-circle me-1"></i>
-                                            ¡Perfecto!
-                                        </div>
                                     </div>
 
                                     <div class="form-floating mb-3">
@@ -163,7 +151,8 @@
                                             required>
                                             <option value="">Seleccione un departamento</option>
                                             <option th:each="depto : ${departamentos}" th:value="${depto.idDepto}"
-                                                th:text="${depto.nombre}">
+                                                th:text="${depto.nombre}"
+                                                th:selected="${depto.idDepto == empleado.departamento.idDepto}">
                                             </option>
                                         </select>
                                         <label for="departamento">Departamento</label>
@@ -171,21 +160,18 @@
                                             <i class="fas fa-exclamation-circle me-1"></i>
                                             Por favor, selecciona un departamento.
                                         </div>
-                                        <div class="valid-feedback">
-                                            <i class="fas fa-check-circle me-1"></i>
-                                            ¡Perfecto!
-                                        </div>
                                     </div>
                                 </div>
 
                                 <div class="d-grid gap-2">
                                     <button type="submit" class="btn btn-primary btn-lg">
-                                        <i class="fas fa-save me-2"></i>Guardar empleado
+                                        <i class="fas fa-save me-2"></i>Actualizar empleado
                                     </button>
                                     <a href="/" class="btn btn-light btn-lg">
                                         <i class="fas fa-times me-2"></i>Cancelar
                                     </a>
                                 </div>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -193,7 +179,7 @@
         </div>
     </div>
 
-    <!-- Toast Notification -->
+    <!-- Notificación Toast -->
     <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
         <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="toast-header">
@@ -202,7 +188,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
             <div class="toast-body">
-                El empleado ha sido guardado correctamente.
+                El empleado ha sido actualizado correctamente.
             </div>
         </div>
     </div>
@@ -217,33 +203,7 @@
             const stepIndicators = document.querySelectorAll('.step-indicator');
             const toastLiveExample = document.getElementById('liveToast');
 
-            // Función para bloquear números
-            function bloquearNumeros(event) {
-                if (/\d/.test(event.key)) {
-                    event.preventDefault();
-                    return false;
-                }
-            }
-
-            // Aplicar el bloqueo de números a los campos de nombre y apellidos
-            const camposTexto = ['nombre', 'appPaterno', 'appMaterno'];
-            camposTexto.forEach(campo => {
-                const input = document.getElementById(campo);
-                input.addEventListener('keypress', bloquearNumeros);
-                input.addEventListener('paste', (event) => {
-                    const texto = (event.clipboardData || window.clipboardData).getData('text');
-                    if (/\d/.test(texto)) {
-                        event.preventDefault();
-                    }
-                });
-            });
-
-            // Establecer fecha máxima (18 años atrás)
-            const fechaNacimiento = document.getElementById('fechaNacimiento');
-            const today = new Date();
-            const maxDate = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
-            fechaNacimiento.max = maxDate.toISOString().split('T')[0];
-
+            // Función para actualizar la barra de progreso
             function updateProgress() {
                 const totalFields = inputs.length;
                 let validFields = 0;
@@ -258,13 +218,14 @@
                 progressBar.style.width = `${progress}%`;
 
                 // Actualizar indicadores de paso
-                if (validFields >= 3) { // Si los campos personales están completos
+                if (validFields >= 3) {
                     stepIndicators[1].classList.add('active');
                 } else {
                     stepIndicators[1].classList.remove('active');
                 }
             }
 
+            // Validación de campos
             inputs.forEach(input => {
                 ['blur', 'input', 'change'].forEach(eventType => {
                     input.addEventListener(eventType, () => {
@@ -280,70 +241,53 @@
                 });
             });
 
-            function validarSoloLetras(input) {
-                // Permitir solo letras mayúsculas y minúsculas
-                const patron = /^[A-Za-z]*$/;
+            // Manejo del envío del formulario
+            form.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                event.stopPropagation();
 
-                // Si el valor no cumple con el patrón, eliminar los caracteres inválidos
-                if (!patron.test(input.value)) {
-                    input.value = input.value.replace(/[^A-Za-z]/g, '');
-                }
-            }
+                if (form.checkValidity()) {
+                    const empleadoId = document.querySelector('input[type="hidden"]').value;
+                    const formData = new FormData(form);
+                    const data = {
+                        idCliente: empleadoId,
+                        nombre: formData.get('nombre'),
+                        appPaterno: formData.get('appPaterno'),
+                        appMaterno: formData.get('appMaterno'),
+                        fechaNacimiento: formData.get('fechaNacimiento'),
+                        departamento: {
+                            idDepto: formData.get('departamento.idDepto')
+                        }
+                    };
 
-            // Bloquear caracteres inválidos en tiempo real
-            document.querySelectorAll('input[type="text"]').forEach(input => {
-                input.addEventListener('keypress', (event) => {
-                    const key = event.key;
-                    if (!/^[A-Za-z]+$/.test(key)) {
-                        event.preventDefault();
+                    try {
+                        const response = await fetch(`/api/v1/empleados/${empleadoId}`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(data)
+                        });
+
+                        if (response.ok) {
+                            const toast = new bootstrap.Toast(toastLiveExample);
+                            toast.show();
+                            setTimeout(() => {
+                                window.location.href = '/';
+                            }, 2000);
+                        } else {
+                            console.error('Error al actualizar el empleado');
+                        }
+                    } catch (error) {
+                        console.error('Error al enviar la solicitud:', error);
                     }
-                });
+                }
+
+                form.classList.add('was-validated');
+                updateProgress();
             });
 
-form.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-
-    if (form.checkValidity()) {
-        const formData = new FormData(form);
-        const data = {
-            nombre: formData.get('nombre'),
-            appPaterno: formData.get('appPaterno'),
-            appMaterno: formData.get('appMaterno'),
-            fechaNacimiento: formData.get('fechaNacimiento'),
-            departamento: {
-                idDepto: formData.get('departamento.idDepto')
-            }
-        };
-
-        try {
-            const response = await fetch(form.action, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            });
-
-            if (response.ok) {
-                const toast = new bootstrap.Toast(toastLiveExample);
-                toast.show();
-                setTimeout(() => {
-                    window.location.href = '/';
-                }, 2000);
-            } else {
-                console.error('Error al guardar el empleado');
-            }
-        } catch (error) {
-            console.error('Error al enviar la solicitud:', error);
-        }
-    }
-
-    form.classList.add('was-validated');
-    updateProgress();
-});
-
-            // Initialize
+            // Inicializar validación y progreso
             updateProgress();
         });
     </script>
