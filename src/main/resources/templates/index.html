@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link rel="icon" type="image/x-icon"href="/src/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="/src/favicon.ico">
     <link rel="shortcut icon" type="image/x-icon" href="/src/favicon.ico">
     <style>
         :root {
@@ -230,9 +230,15 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#" data-type="historial">
+                <a class="nav-link" href="#" data-type="historial-empleados">
                     <i class="fas fa-history me-2"></i>
-                    Historial
+                    Historial de empleados
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" data-type="historial-departamentos">
+                    <i class="fas fa-history me-2"></i>
+                    Historial de departamentos
                 </a>
             </li>
         </ul>
@@ -430,15 +436,17 @@
 
             // Configurar la vista según el tipo
             switch (type) {
-                case 'empleados':
-                    return handleEmpleadosView(data, tableTitle, tableDescription, addButton, tableHeaders, tableBody);
-                case 'departamentos':
-                    return handleDepartamentosView(data, tableTitle, tableDescription, addButton, tableHeaders, tableBody);
-                case 'historial':
-                    return handleHistorialView(data, tableTitle, tableDescription, tableHeaders, tableBody);
-                default:
-                    throw new Error('Tipo de vista no válido');
-            }
+    case 'empleados':
+        return handleEmpleadosView(data, tableTitle, tableDescription, addButton, tableHeaders, tableBody);
+    case 'departamentos':
+        return handleDepartamentosView(data, tableTitle, tableDescription, addButton, tableHeaders, tableBody);
+    case 'historial-empleados':
+        return handleHistorialEmpleadosView(data, tableTitle, tableDescription, tableHeaders, tableBody);
+    case 'historial-departamentos':
+        return handleHistorialDepartamentosView(data, tableTitle, tableDescription, tableHeaders, tableBody);
+    default:
+        throw new Error('Tipo de vista no válido');
+}
 
         } catch (error) {
             console.error('Error al cargar los datos:', error);
@@ -534,8 +542,8 @@
     `).join('');
     }
 
-    function handleHistorialView(data, tableTitle, tableDescription, tableHeaders, tableBody) {
-        tableTitle.textContent = 'Historial de Cambios';
+    function handleHistorialEmpleadosView(data, tableTitle, tableDescription, tableHeaders, tableBody) {
+        tableTitle.textContent = 'Historial de cambios';
         tableDescription.textContent = 'Registro histórico de cambios en empleados';
 
         tableHeaders.innerHTML = `
@@ -564,6 +572,36 @@
     `).join('');
     }
 
+    function handleHistorialDepartamentosView(data, tableTitle, tableDescription, tableHeaders, tableBody) {
+        tableTitle.textContent = 'Historial de cambios';
+        tableDescription.textContent = 'Registro histórico de cambios en departamentos';
+
+        tableHeaders.innerHTML = `
+        <th>ID Registro</th>
+        <th>ID Deposito</th>
+        <th>Operación</th>
+        <th>Fecha y Hora</th>
+    `;
+
+        if (!data || data.length === 0) {
+            showEmptyState(tableBody, 'historial', 4);
+            return;
+        }
+
+        tableBody.innerHTML = data.map(registro => `
+        <tr>
+            <td>#${registro.id_registro}</td>
+            <td>#${registro.id_depto}</td>
+            <td>
+                <span class="badge ${getBadgeClass(registro.operacion)}">
+                    ${registro.operacion}
+                </span>
+            </td>
+            <td>${new Date(registro.fecha_hora).toLocaleString()}</td>
+        </tr>
+    `).join('');
+    }
+
     function showEmptyState(tableBody, type, colSpan) {
         const emptyStateContent = {
             empleados: {
@@ -574,12 +612,15 @@
                 icon: 'building',
                 message: 'No hay departamentos registrados'
             },
-            historial: {
+            'historial-empleados': {
+                icon: 'history',
+                message: 'No hay registros históricos'
+            },
+            'historial-departamentos': {
                 icon: 'history',
                 message: 'No hay registros históricos'
             }
         };
-
         const content = emptyStateContent[type];
         tableBody.innerHTML = `
         <tr>

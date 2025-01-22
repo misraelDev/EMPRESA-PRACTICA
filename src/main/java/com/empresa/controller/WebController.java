@@ -31,8 +31,13 @@ public class WebController {
     }
 
     
-    @GetMapping("/historial")
+    @GetMapping("/historial-empleados")
     public String mostrarHistorial(Model model) {
+        return "index";
+    }
+
+    @GetMapping("/historial-departamentos")
+    public String mostrarHistorialDepartamentos(Model model) {
         return "index";
     }
     // Rutas para Departamentos

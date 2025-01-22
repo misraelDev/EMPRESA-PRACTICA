@@ -12,7 +12,7 @@ import com.empresa.model.EmpleadoBackup;
 import com.empresa.service.HistorialService;
 
 @RestController
-@RequestMapping("/api/v1/historial")
+@RequestMapping("/api/v1/historial-empleados")
 public class HistorialController {
 
     @Autowired
