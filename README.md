@@ -10,8 +10,17 @@ Este proyecto es una práctica de desarrollo de una aplicación web utilizando J
 
 ## Capturas de pantalla
 
-### Página de inicio
-![Página de Inicio](https://github.com/user-attachments/assets/06e0a9e2-9dc1-4f70-934d-261298378a8e)
+### Página de Empleados
+![Página de Empleados](https://github.com/user-attachments/assets/07f3ede6-bb8d-4dfd-9f7f-7c426b6b7656)
+
+### Página de Departamentos
+![Página de Departamentos](https://github.com/user-attachments/assets/4acd849a-e04d-4ae4-b515-7ec9d2394d8a)
+
+### Página de historial de cambios - Empleados
+![Página de Empleados](https://github.com/user-attachments/assets/2f727419-7931-4803-b9d5-77434452ee35)
+
+### Página de historial de cambios - Departamentos
+![Página de Departamentos](https://github.com/user-attachments/assets/7aea3a4c-4fe8-462d-9389-1e3de7a2e927)
 
 ### Agregar departamento
 ![Agregar Departamento](https://github.com/user-attachments/assets/195cc71c-704f-4610-9c8e-5fc7315272ce)
